@@ -1,0 +1,699 @@
+openapi: 3.0.3
+info:
+  title: Swagger Clinica - OpenAPI 3.0
+  description: |-
+    Visando automatizar os agendamentos de consultas médicas, uma clínica resolve criar um sistema web de administração de horários desenvolvido a partir da linguagem de programação Java. Esse sistema consiste primeiramente na autenticação do usuário. Se ele não estiver cadastrado no banco de dados MySQL, terá a possibilidade de fazer seu auto cadastro, caso contrário, será redirecionado a uma página, desenvolvida com React e ligada ao back-end com REST, onde visualizará as especialidades existentes na clínica. Após escolher a especialidade, poderá escolher o médico pelo qual deseja ser atendido. Feito isso, escolherá a data desejada entre as que estiverem disponíveis e por fim, o horário mais apropriado. Próximo a data selecionada uma mensagem automática será enviada para o número de telefone informado no cadastro através de um API do WhatsApp, assim ele poderá confirmar ou cancelar a consulta.
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/LETICIAFRUET09/Trabalho03/1.0.11
+  - url: https://petstore3.swagger.io/api/v3
+tags:
+  - name: medico
+    description: Acessar os dados dos médicos
+    externalDocs:
+      description: Veja mais 
+      url: http://swagger.io
+  - name: paciente
+    description: Acesse os dados dos pacientes
+    externalDocs:
+      description: Veja mais 
+      url: http://swagger.io
+paths:
+  /medico:
+    post:
+      tags:
+        - medico
+      summary: Adicionar um novo médico
+      description: Adicionar um novo médico na clínica
+      operationId: addMedico
+      security:
+      - api_key: []
+      - medico_auth:
+        - read:medico
+        - write:medico
+      requestBody:
+        description: Adicionar um novo médico na clínica
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/medico'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/medico'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/medico'
+        required: true
+      responses:
+        '201':
+          description: Sucesso ao adicionar novo médico.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/medico'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/medico'
+        '400':
+          description: Requisição inválida. Erro de validação nos dados fornecidos. Não foi possível adicionar o novo médico.
+        '401':
+          description: Necessita autenticação para acessar este recurso.
+        '403':
+          description: Acesso negado. O usuário autenticado não tem permissão para adicionar um médico.
+    get:
+      tags:
+        - medico
+      summary: Encontrar os médicos
+      description: Retorna os médicos
+      operationId: getMedico
+      responses:
+        '200':
+          description: Sucesso ao encontrar os médicos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/medico'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/medico'
+        '400':
+          description: Requisição inválida. Erro de validação nos dados fornecidos. Não foi possível encontrar os médicos.
+        '404':
+          description: Serviço solicitado não existe.
+  /medico/{medicoId}:
+    get:
+      tags:
+        - medico
+      summary: Encontrar um medico pela ID
+      description: Retorna um único médico
+      operationId: getMedicoById
+      parameters:
+        - name: medicoId
+          in: path
+          description: ID do médico retornada
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Sucesso ao encontrar o médico.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/medico'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/medico'
+        '400':
+          description: Requisição inválida. Erro de validação nos dados fornecidos. Não foi possível encontrar o médico.
+        '404':
+          description: Serviço solicitado não existe.
+    put:
+      tags:
+        - medico
+      summary: Atualizar um médico pela ID
+      description: ''
+      operationId: updateMedico
+      security:
+      - api_key: []
+      - medico_auth:
+        - read:medico
+        - write:medico
+      parameters:
+        - name: medicoId
+          in: path
+          description: Id do médico que precisa ser atualizado
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: nome
+          in: query
+          description: Nome do médico que precisa ser atualizado
+          schema:
+            type: string
+        - name: especialidade
+          in: query
+          description: Especialidade do médico que precisa ser atualizado
+          schema:
+            type: string
+      responses:
+        '200': 
+          description: Sucesso ao atualizar o médico.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/medico'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/medico'
+        '400':
+          description: Requisição inválida. Erro de validação nos dados fornecidos. Não foi possível atualizar o médico.
+        '401':
+          description: Necessita autenticação para acessar este recurso
+        '403':
+          description: Acesso negado. O usuário autenticado não tem permissão para atualizar um médico.
+        '404':
+          description: Serviço solicitado não existe.
+    delete:
+      tags:
+        - medico
+      summary: Deletar um medico
+      description: Deletar um médico da clinica
+      operationId: deleteMedico
+      security:
+      - api_key: []
+      - medico_auth:
+        - read:medico
+        - write:medico
+      parameters:
+        - name: api_key
+          in: header
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: medicoId
+          in: path
+          description: Id do médico para deletar
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Sucesso ao excluir o médico.
+        '400':
+          description: Requisição inválida. Erro de validação nos dados fornecidos. Não foi possível excluir o médico.
+        '401':
+          description: Necessita autenticação para acessar este recurso.
+        '403':
+          description: Acesso negado. O usuário autenticado não tem permissão para excluir um médico.
+        '404':
+          description: Serviço solicitado não existe.
+  /medico/especialidade/{especialidadeId}:
+    delete:
+      tags:
+        - medico
+      summary: Deletar todos os médicos de uma especialidade
+      description: Exclui todos os médicos associados a uma especialidade específica, removendo-os da clínica.
+      operationId: deleteMedicosByEspecialidade
+      security:
+      - api_key: []
+      - medico_auth:
+        - read:medico
+        - write:medico
+      parameters:
+        - name: especialidadeId
+          in: path
+          description: ID da especialidade cujos médicos serão excluídos
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Sucesso ao excluir os médicos da especialidade.
+        '400':
+          description: Requisição inválida. Erro de validação nos dados fornecidos. Não foi possível excluir os médicos da especialidade.
+        '401':
+          description: Necessita autenticação para acessar este recurso.
+        '403':
+          description: Acesso negado. O usuário autenticado não tem permissão para excluir os médicos da especialidade.
+        '404':
+          description: Serviço solicitado não existe.
+  /paciente:
+    post:
+      tags:
+        - paciente
+      summary: Adicionar um novo paciente
+      description: Adicionar um novo paciente na lista
+      operationId: addPaciente
+      security:
+      - api_key: []
+      - paciente_auth:
+        - read:paciente
+        - write:paciente
+      requestBody:
+        description: Adicionar um novo paciente na lista
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/paciente'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/paciente'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/paciente'
+        required: true
+      responses:
+        '201':
+          description: Sucesso ao adicionar novo paciente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/paciente'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/paciente'
+        '400':
+          description: Requisição inválida. Erro de validação nos dados fornecidos. Não foi possível adicionar novo paciente
+        '401':
+          description: Necessita autenticação para acessar este recurso
+        '403':
+          description: Acesso negado. O usuário autenticado não tem permissão para adicionar um paciente.
+    get:
+      tags:
+        - paciente
+      summary: Encontrar os pacientes
+      description: Retorna os pacientes
+      operationId: getPaciente
+      security:
+      - api_key: []
+      - paciente_auth:
+        - read:paciente
+        - write:paciente
+      responses:
+        '200':
+          description: Sucesso ao encontrar os pacientes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/paciente'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/paciente'
+        '400':
+          description: Requisição inválida. Erro de validação nos dados fornecidos. Não foi possível encontrar os pacientes.
+        '401':
+          description: Necessita autenticação para acessar este recurso
+        '403':
+          description: Proibido. Você não tem permissão para acessar este recurso
+        '404':
+          description: Serviço solicitado não existe.
+  /paciente/{pacienteId}:
+    get:
+      tags:
+        - paciente
+      summary: Encontrar um paciente pela ID
+      description: Retorna um único paciente
+      operationId: getPacienteById
+      security:
+      - api_key: []
+      - paciente_auth:
+        - read:paciente
+        - write:paciente
+      parameters:
+        - name: pacienteId
+          in: path
+          description: ID do paciente retornada
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Sucesso ao encontrar o paciente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/paciente'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/paciente'
+        '400':
+          description: Requisição inválida. Erro de validação nos dados fornecidos. Não foi possível encontrar o paciente.
+        '401':
+          description: Necessita autenticação para acessar este recurso
+        '403':
+          description: Proibido. Você não tem permissão para acessar este recurso
+        '404':
+          description: Serviço solicitado não existe.
+    put:
+      tags:
+        - paciente
+      summary: Atualizar um paciente pela ID
+      description: ''
+      operationId: updatePaciente
+      security:
+      - api_key: []
+      - paciente_auth:
+        - read:paciente
+        - write:paciente
+      parameters:
+        - name: pacienteId
+          in: path
+          description: Id do paciente que precisa ser atualizado
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: nome
+          in: query
+          description: Nome do paciente que precisa ser atualizado
+          schema:
+            type: string
+        - name: dataNascimento
+          in: query
+          description: Data de nascimento do paciente que precisa ser atualizado
+          schema:
+            type: string
+      responses:
+        '200': 
+          description: Sucesso ao atualizar o paciente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/paciente'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/paciente'
+        '400':
+          description: Requisição inválida. Erro de validação nos dados fornecidos. Não foi possível atualizar o paciente.
+        '401':
+          description: Necessita autenticação para acessar este recurso
+        '403':
+          description: Acesso negado. O usuário autenticado não tem permissão para atualizar um paciente.
+        '404':
+          description: Serviço solicitado não existe.
+    delete:
+      tags:
+        - paciente
+      summary: Deletar um paciente
+      description: Deletar um paciente da clinica
+      operationId: deletePaciente
+      security:
+      - api_key: []
+      - paciente_auth:
+        - read:paciente
+        - write:paciente
+      parameters:
+        - name: pacienteId
+          in: path
+          description: Id do paciente para deletar
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Sucesso ao excluir o paciente.
+        '400':
+          description: Requisição inválida. Erro de validação nos dados fornecidos. Não foi possível excluir o paciente.
+        '401':
+          description: Necessita autenticação para acessar este recurso.
+        '403':
+          description: Acesso negado. O usuário autenticado não tem permissão para excluir um paciente.
+        '404':
+          description: Serviço solicitado não existe.
+  /medico/{medicoId}/pacientes:
+    get:
+      tags:
+        - medico
+      summary: Listar os pacientes de um médico específico
+      description: Listar de pacientes de um médico específico
+      operationId: getPacientesByMedico
+      security:
+      - api_key: []
+      - paciente_auth:
+        - read:paciente
+        - write:paciente
+      parameters:
+        - name: medicoId
+          in: path
+          description: ID do médico
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Sucesso ao listar os pacientes de um médico específico
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/paciente'
+        '400':
+          description: Requisição inválida. Erro de validação nos dados fornecidos. Não foi possível encontrar o médico.
+        '401':
+          description: Necessita autenticação para acessar este recurso.
+        '403':
+          description: Acesso negado. O usuário autenticado não tem permissão para adicionar um médico.
+        '404':
+          description: Serviço solicitado não existe.
+    post:
+      tags:
+        - medico
+      summary: Adicionar um paciente a um médico
+      description: Adicionar um paciente existente à lista de um médico
+      operationId: addPacienteToMedico
+      security:
+      - api_key: []
+      - paciente_auth:
+        - read:paciente
+        - write:paciente
+      parameters:
+        - name: medicoId
+          in: path
+          description: ID do médico
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Paciente a ser adicionado ao médico
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/paciente'
+      responses:
+        '201':
+          description: Sucesso ao adicionar paciente a um médico
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/medico'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/medico'
+        '400':
+          description: Requisição inválida. Erro de validação nos dados fornecidos. Não foi possível adicionar um paciente a um médico
+        '401':
+          description: Necessita autenticação para acessar este recurso
+        '403':
+          description: Acesso negado. O usuário autenticado não tem permissão para adicionar um médico.
+  /especialidade:
+    post:
+      tags:
+        - especialidade
+      summary: Adicionar uma nova especialidade
+      description: Adicionar uma nova especialidade à clínica
+      operationId: addEspecialidade
+      security:
+      - api_key: []
+      - especialidade_auth:
+        - read:especialidade
+        - write:especialidade
+      requestBody:
+        description: Adicionar uma nova especialidade à clínica
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/especialidade'
+      responses:
+        '201':
+          description: Sucesso ao adicionar nova especialidade
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/especialidade'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/especialidade'
+        '400':
+          description: Requisição inválida. Erro de validação nos dados fornecidos. Não foi possível adicionar nova especialidade
+        '401':
+          description: Necessita autenticação para acessar este recurso
+        '403':
+          description: Acesso negado. O usuário autenticado não tem permissão para adicionar uma especialidade.
+  /especialidade/{especialidadeId}/medicos:
+   put:
+      tags:
+        - especialidade
+      summary: Atualizar uma especialidade específica
+      description: Atualizar a especialidade
+      operationId: updateMedicosByEspecialidade
+      parameters:
+        - name: especialidadeId
+          in: path
+          description: ID da especialidade que precisa ser atualizada
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+      - api_key: []
+      - especialidade_auth:
+        - read:especialidade
+        - write:especialidade
+      requestBody:
+        description: Especialidade atualizada 
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/medico'
+      responses:
+        '200': 
+          description: Sucesso ao atualizar a especialidade.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/especialidade'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/especialidade'
+        '400':
+          description: Requisição inválida. Erro de validação nos dados fornecidos. Não foi possível atualizar a especialidade.
+        '401':
+          description: Necessita autenticação para acessar este recurso
+        '403':
+          description: Acesso negado. O usuário autenticado não tem permissão para atualizar uma especialidade.
+        '404':
+          description: Serviço solicitado não existe.
+components:
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
+    medico_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore.swagger.io/oauth/authorize
+          scopes:
+            read:medico: lê os médicos
+            write:medico: modifica os médicos
+    paciente_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore.swagger.io/oauth/authorize
+          scopes:
+            read:paciente: lê os pacientes
+            write:paciente: modifica os pacientes
+    especialidade_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore.swagger.io/oauth/authorize
+          scopes:
+            read:especialidade: lê as especialidades
+            write:especialidade: modifica as especialidades
+  schemas:
+    medico:
+      required:
+        - id
+        - nome
+        - crm
+        - especialidade
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador único do médico
+          format: int64
+          example: 10
+        nome:
+          type: string
+          description: Nome do médico
+          example: João da Silva
+          minLength: 3
+        crm:
+          type: string
+          description: CRM único do médico
+          example: 548754
+          minLength: 6
+          maxLength: 6
+        especialidade:
+          type: string
+          description: Especialidade do médico
+          example: Pediatra
+        pacientes:
+          type: array
+          description: Lista dos pacientes de determinado médico
+          items:
+            $ref: '#/components/schemas/paciente'
+      xml:
+        name: medico
+    paciente:
+      required:
+        - id
+        - nome
+        - cpf
+        - dataNascimento
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador único do paciente
+          format: int64
+          example: 10
+        nome:
+          type: string
+          description: Nome do paciente
+          example: Maria Carvalho
+          minLength: 3
+        cpf:
+          type: string
+          description: CPF único do paciente
+          example: 64982578420
+          minLength: 11
+          maxLength: 11
+        dataNascimento:
+          type: string
+          description: Data de nascimento do paciente
+          example: 26042004
+          minLength: 8
+          maxLength: 8
+      xml:
+        name: paciente
+    especialidade:
+      required:
+          - id
+          - nome
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador único da especialidade
+          format: int64
+          example: 1
+        nome:
+          type: string
+          description: Nome único da especialidade
+          example: Cardiologia
+        medicos:
+          type: array
+          description: Lista dos médicos com determinada especialidade
+          items:
+            $ref: '#/components/schemas/medico'
+      xml:
+        name: especialidade
